@@ -110,7 +110,7 @@ server {
 
 
 	{{ range $container := $containers }}
-		location /{{ $container.Env.VIRTUAL_DIRECTORY }}/ {
+		location /{{ $container.Env.VIRTUAL_LOCATION }}/ {
 		proxy_pass {{ trim $proto }}://{{ trim $host }};
 		{{ if (exists (printf "/etc/nginx/htpasswd/%s" $host)) }}
 		auth_basic	"Restricted {{ $host }}";
