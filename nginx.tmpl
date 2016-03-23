@@ -71,7 +71,6 @@ server {
 {{ end }}
 
 {{ range $host, $containers := groupByMulti $ "Env.VIRTUAL_HOST" "," }}
-{{ range $location, $containers := groupByMulti $ "Env.VIRTUAL_LOCATION" "," }}
 
 upstream {{ $host }} {
 {{ range $container := $containers }}
@@ -144,7 +143,7 @@ server {
 	include /etc/nginx/vhost.d/default;
 	{{ end }}
 
-	location /{{ $location }} {
+	location / {
 		proxy_pass {{ trim $proto }}://{{ trim $host }};
 		{{ if (exists (printf "/etc/nginx/htpasswd/%s" $host)) }}
 		auth_basic	"Restricted {{ $host }}";
@@ -160,7 +159,7 @@ server {
 {{ else }}
 
 server {
-	server_name {{ $host }};
+	server_name docker-devel.siwa.vpn;
 	listen 80 {{ $default_server }};
 	access_log /var/log/nginx/access.log vhost;
 
@@ -170,7 +169,7 @@ server {
 	include /etc/nginx/vhost.d/default;
 	{{ end }}
 
-	location /{{ $location }} {
+	location /{{ $container.Env.VIRTUAL_DIRECTORY }} {
 		proxy_pass {{ trim $proto }}://{{ trim $host }};
 		{{ if (exists (printf "/etc/nginx/htpasswd/%s" $host)) }}
 		auth_basic	"Restricted {{ $host }}";
