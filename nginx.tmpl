@@ -170,7 +170,7 @@ server {
 	include /etc/nginx/vhost.d/default;
 	{{ end }}
 
-	location / {
+	location /{{ $location }} {
 		proxy_pass {{ trim $proto }}://{{ trim $host }};
 		{{ if (exists (printf "/etc/nginx/htpasswd/%s" $host)) }}
 		auth_basic	"Restricted {{ $host }}";
